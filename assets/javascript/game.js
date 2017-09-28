@@ -8,12 +8,13 @@ var puzzleDisplay = " ";
 var guessDisplay = " ";
 var ltrGuessed = " ";
 var guessCount = 10;
+var matchCount = 0;
 var winCount = 0;
 var lossCount = 0;
 
 function charNameToArray(charName) { //take the character name and convert to an array
 	charNameArray = Array.from(charName);
-	alert("character name array: " + charNameArray);
+//	alert("character name array: " + charNameArray);
 };
 
 function createHiddenNameArray(charNameArray) { //take the character name array and create a new array of underscores the same length
@@ -54,19 +55,32 @@ function matchSearch(ltrGuessed) { //cycle through charNameArray and find index 
 		if (ltrGuessed === charNameArray[i]) {
 			updateHiddenNameArray(i);
 			correctGuess = true;
+
 		}
 		 
 	}
 	if (!correctGuess) {
 		guessCount--;
+		if (guessCount === 0) {
+			lossCount++;
+			alert("You lost!");
+			resetGame();
+
+		}
+	}
+	else if (matchCount === charNameArray.length) {
+		winCount++;
+		alert("You won!");
+		resetGame();
 	}
 };
 
 function updateHiddenNameArray(index) { //update charNameHidden to reveal that letter by index.
 
 	charNameHidden[index] = ltrGuessed;
+	matchCount++;
 };
-/*
+
 function updateCounters() {
 
 	document.getElementById("winCnt").innerHTML = winCount;
@@ -74,7 +88,7 @@ function updateCounters() {
 	document.getElementById("guessCnt").innerHTML = guessCount;
 
 };
-*/
+
 function resetGame() { //reset all global variables
 
 	charName = " ";
@@ -84,9 +98,10 @@ function resetGame() { //reset all global variables
 	puzzleDisplay = " ";
 	guessDisplay = " ";
 	ltrGuessed = " ";
-	guessCount = 10;
-	winCount = 0;
-	lossCount = 0;
+	matchCount = 0;
+//	guessCount = 10;
+//	winCount = 0;
+//	lossCount = 0;
 
 };
 
@@ -101,17 +116,18 @@ document.addEventListener('DOMContentLoaded', function() {
    createHiddenNameArray(charNameArray);
    puzzleDisplay = displayHiddenNameArray();
    document.getElementById("hangman").innerHTML = puzzleDisplay;
-});
+//   document.getElementById("guesses").innerHTML = guessArray;
+// });
 
-document.addEventListener('DOMContentLoaded', function() {
+// document.addEventListener('DOMContentLoaded', function() {
    document.getElementById("winCnt").innerHTML = winCount;
-});
+// });
 
-document.addEventListener('DOMContentLoaded', function() {
+// document.addEventListener('DOMContentLoaded', function() {
    document.getElementById("lossCnt").innerHTML = lossCount;
-});
+// });
 
-document.addEventListener('DOMContentLoaded', function() {
+// document.addEventListener('DOMContentLoaded', function() {
    document.getElementById("guessCnt").innerHTML = guessCount;
 });
 
@@ -130,7 +146,7 @@ document.onkeyup = function(event) {
    	puzzleDisplay = displayHiddenNameArray();
    	document.getElementById("hangman").innerHTML = puzzleDisplay;
 
-
+   	updateCounters();
 
     };
 
