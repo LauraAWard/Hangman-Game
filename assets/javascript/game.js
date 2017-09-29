@@ -1,8 +1,10 @@
 <!-- //hide script from old browsers
 
+
 var charName = " ";
 var charNameArray = [];
 var charNameHidden = [];
+var charObjArray = [];
 var guessArray = [];
 var puzzleDisplay = " ";
 var guessDisplay = " ";
@@ -13,6 +15,21 @@ var winCount = 0;
 var lossCount = 0;
 var correctGuess = false;
 
+
+function gameChar(name, picSrc, soundSrc, hint) {
+    this.chName = name;
+    this.chPic = picSrc;
+    this.chSound = soundSrc;
+    this.chHint = hint;
+}
+
+function createCharObjArray () {
+	var char_1 = new gameChar("CARTMAN", "assets/images/cartman.gif", "assets/sounds/cartman.mp3", "Likes Cheesy Poofs");
+	var char_2 = new gameChar("BUTTERS", "assets/images/butters.gif", "assets/sounds/butters.mp3", "Always Grounded"); 
+	var char_3 = new gameChar("KENNY", "assets/images/kenny.gif", "assets/sounds/kenny.mp3", "Accident Prone"); 
+	charObjArray.push(char_1, char_2, char_3);
+	console.log(charObjArray[1]);
+};
 
 function charNameToArray(charName) { //take the character name and convert to an array
 	charNameArray = Array.from(charName);
@@ -69,7 +86,7 @@ function scoreCalc(correctGuess) { //update score tallies, and start new round i
 
 	if (correctGuess && guessArray.indexOf(ltrGuessed) === -1) {
 		matchCount++;
-		if (matchCount === charNameArray.length) {
+		if (matchCount === charNameArray.length || charNameHidden.indexOf("_") === -1) {
 			winCount++;
 			console.log("You won!"); // replace this with alert content in a div
 			newRound(); 
@@ -108,6 +125,7 @@ function resetGame() { //reset all global variables
 
 	winCount = 0; 
 	lossCount = 0; 
+	createCharObjArray();
 	newRound(); 
 
 };
@@ -142,14 +160,30 @@ function newRound() { //select new char, re-set display values (except for win/l
 
 function newChar() { //randomly select a new charName from an array , or new charObject from an array
 
-	charName = "CARTMAN";
+	var charIndex = (Math.floor(Math.random() * charObjArray.length));
+	console.log(charIndex);
+	var charObj = charObjArray[charIndex];
+	console.log(charObj);
+	charName = charObj.chName;
+	console.log(charName);
+
+	// charName = "CARTMAN";
 
 	return charName; //or charobject
 };
 
-document.addEventListener('DOMContentLoaded', function() {
 
-   resetGame();
+
+document.addEventListener("DOMContentLoaded", function() {
+
+   	resetGame();
+
+});
+
+window.onload = function(){
+
+document.getElementById("btnReset").addEventListener("click", function() {
+	resetGame();
 
 });
 
@@ -164,6 +198,6 @@ document.onkeyup = function(event) {
 
     };
 
-
+};
 
 // end hiding script from old browsers -->
