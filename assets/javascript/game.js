@@ -7,14 +7,16 @@ var guessArray = [];
 var puzzleDisplay = " ";
 var guessDisplay = " ";
 var ltrGuessed = " ";
-var guessCount = 10;
+var guessCount = 5;
 var matchCount = 0;
 var winCount = 0;
 var lossCount = 0;
+var correctGuess = false;
+
 
 function charNameToArray(charName) { //take the character name and convert to an array
 	charNameArray = Array.from(charName);
-//	alert("character name array: " + charNameArray);
+	console.log("character name array: " + charNameArray);
 };
 
 function createHiddenNameArray(charNameArray) { //take the character name array and create a new array of underscores the same length
@@ -23,11 +25,10 @@ function createHiddenNameArray(charNameArray) { //take the character name array 
 	}
 };
 
-function displayHiddenNameArray() { //display the array with guessed letters revealed
+function displayHiddenNameArray() { //display the array with placeholders and spacing (plus guessed letters revealed)
 
-	var placeholders = charNameHidden.join(" ");
-	return placeholders;
-
+	puzzleDisplay = charNameHidden.join(" ");
+	document.getElementById("hangman").innerHTML = puzzleDisplay;
 };
 
 
@@ -37,48 +38,62 @@ function createGuessArray(ltrGuessed) { //feed guesses into this array, do not t
 		guessArray.push(ltrGuessed);
 	} 
 	else {
-		alert("You have already guessed the letter " + ltrGuessed);
+		console.log("You have already guessed the letter " + ltrGuessed); // replace this with alert content in a div
 	}
+	displayGuessArray();
 };
 
 function displayGuessArray() { //display guesses in caps and with spacing
 
-	var guesses = guessArray.join(" ");
-	return guesses;
+	guessDisplay = guessArray.join(" ");
+	document.getElementById("guesses").innerHTML = guessDisplay;
 };
 
 function matchSearch(ltrGuessed) { //cycle through charNameArray and find index of matching letters.  Cycle through entire array for dups
 
-	var correctGuess = false;
+	correctGuess = false;
+	
+		for (var i = 0; i < charNameArray.length; i++) {
+			if (ltrGuessed === charNameArray[i]) {
+				updateHiddenNameArray(i);
+				displayHiddenNameArray();
+				correctGuess = true;
 
-	for (var i = 0; i < charNameArray.length; i++) {
-		if (ltrGuessed === charNameArray[i]) {
-			updateHiddenNameArray(i);
-			correctGuess = true;
-
+			}
 		}
-		 
+
+		scoreCalc(correctGuess);
+};	
+	
+function scoreCalc(correctGuess) { //update score tallies, and start new round if won/lost
+
+	if (correctGuess && guessArray.indexOf(ltrGuessed) === -1) {
+		matchCount++;
+		if (matchCount === charNameArray.length) {
+			winCount++;
+			console.log("You won!"); // replace this with alert content in a div
+			newRound(); 
+		}
+
 	}
-	if (!correctGuess) {
-		guessCount--;
+
+	else if (!correctGuess && guessArray.indexOf(ltrGuessed) === -1) {
+		guessCount--;  
 		if (guessCount === 0) {
 			lossCount++;
-			alert("You lost!");
-			resetGame();
+			console.log("You lost!"); // replace this with alert content in a div
+			newRound(); 
 
 		}
 	}
-	else if (matchCount === charNameArray.length) {
-		winCount++;
-		alert("You won!");
-		resetGame();
-	}
+	updateCounters();
 };
 
-function updateHiddenNameArray(index) { //update charNameHidden to reveal that letter by index.
+function updateHiddenNameArray(index) { //update charNameHidden to reveal that letter by index, and update matchCount
 
-	charNameHidden[index] = ltrGuessed;
-	matchCount++;
+	if (charNameHidden[index] === "_") {
+		charNameHidden[index] = ltrGuessed;
+	}
 };
 
 function updateCounters() {
@@ -91,6 +106,14 @@ function updateCounters() {
 
 function resetGame() { //reset all global variables
 
+	winCount = 0; 
+	lossCount = 0; 
+	newRound(); 
+
+};
+
+function initVars() { //re-initialize variables
+
 	charName = " ";
 	charNameArray = [];
 	charNameHidden = [];
@@ -99,36 +122,35 @@ function resetGame() { //reset all global variables
 	guessDisplay = " ";
 	ltrGuessed = " ";
 	matchCount = 0;
-//	guessCount = 10;
-//	winCount = 0;
-//	lossCount = 0;
+	guessCount = 5;
+	correctGuess = false;
+
+};
+
+function newRound() { //select new char, re-set display values (except for win/loss)
+
+	initVars();
+	newChar();
+	charNameToArray(charName);
+   	createHiddenNameArray(charNameArray);
+	displayHiddenNameArray();
+    displayGuessArray();
+
+    updateCounters();
 
 };
 
 function newChar() { //randomly select a new charName from an array , or new charObject from an array
+
 	charName = "CARTMAN";
+
 	return charName; //or charobject
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-   var charName = newChar();
-   charNameToArray(charName);
-   createHiddenNameArray(charNameArray);
-   puzzleDisplay = displayHiddenNameArray();
-   document.getElementById("hangman").innerHTML = puzzleDisplay;
-//   document.getElementById("guesses").innerHTML = guessArray;
-// });
 
-// document.addEventListener('DOMContentLoaded', function() {
-   document.getElementById("winCnt").innerHTML = winCount;
-// });
+   resetGame();
 
-// document.addEventListener('DOMContentLoaded', function() {
-   document.getElementById("lossCnt").innerHTML = lossCount;
-// });
-
-// document.addEventListener('DOMContentLoaded', function() {
-   document.getElementById("guessCnt").innerHTML = guessCount;
 });
 
 document.onkeyup = function(event) {
@@ -136,21 +158,12 @@ document.onkeyup = function(event) {
 	var guess = event.key;
 	ltrGuessed = guess.toUpperCase();
 
-	createGuessArray(ltrGuessed);
-	guessDisplay = displayGuessArray();
-//	alert("User guesses: " + guessDisplay);
-	document.getElementById("guesses").innerHTML = guessDisplay;
-   	
    	matchSearch(ltrGuessed);
 
-   	puzzleDisplay = displayHiddenNameArray();
-   	document.getElementById("hangman").innerHTML = puzzleDisplay;
-
-   	updateCounters();
+	createGuessArray(ltrGuessed);
 
     };
 
 
-//updateCounters();
 
 // end hiding script from old browsers -->
