@@ -44,9 +44,9 @@ function gameChar(name, picSrc, soundSrc, hint) {
 };
 
 function createCharObjArray () {
-	var char_1 = new gameChar("CARTMAN", "assets/images/cartman.gif", "assets/sounds/cartman.mp3", "Likes Cheesy Poofs");
-	var char_2 = new gameChar("BUTTERS", "assets/images/butters.gif", "assets/sounds/butters.mp3", "Always Grounded"); 
-	var char_3 = new gameChar("KENNY", "assets/images/kenny.gif", "assets/sounds/kenny.mp3", "Accident Prone"); 
+	var char_1 = new gameChar("CARTMAN", "assets/images/Eric-cartman.png", "assets/sounds/cartman.mp3", "Likes Cheesy Poofs");
+	var char_2 = new gameChar("BUTTERS", "assets/images/ButtersStotch.png", "assets/sounds/butters.mp3", "Always Grounded"); 
+	var char_3 = new gameChar("KENNY", "assets/images/KennyMcCormick.png", "assets/sounds/kenny.mp3", "Accident Prone"); 
 	charObjArray.push(char_1, char_2, char_3);
 	console.log(charObjArray[1]);
 };
@@ -111,7 +111,8 @@ function scoreCalc(correctGuess) { //update score tallies, and start new round i
 			winCount++;
 			// console.log("You won!"); // replace this with alert content in a div
 			document.getElementById("msgAlerts").innerHTML = "You won!";
-			newRound(); 
+			revealPhoto(charPicSrc);
+			// newRound(); 
 		}
 
 	}
@@ -171,9 +172,21 @@ function initVars() { //re-initialize variables
 
 };
 
+function hidePhoto() {
+
+	document.getElementById("imgSPC").src = "assets/images/abstract-q-c-400-400-2.jpg";
+};
+
+function revealPhoto(picSrc) {
+
+	document.getElementById("imgSPC").src = picSrc;
+};
+
+
 function newRound() { //select new char, re-set display values (except for win/loss)
 
 	initVars();
+	hidePhoto();
 	newChar();
 	charNameToArray(charName);
    	createHiddenNameArray(charNameArray);
@@ -198,6 +211,7 @@ function newChar() { //randomly select a new charName from an array , or new cha
 	charPicSrc = charObj.getchPic();
 	charSoundSrc = charObj.getchSound();
 	charHint = charObj.getchHint();*/
+	charPicSrc = charObj.chPic;
 	charHint = charObj.chHint;
 	console.log(charName);
 
