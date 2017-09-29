@@ -2,6 +2,9 @@
 
 
 var charName = " ";
+var charPicSrc = " ";
+var charSoundSrc = " ";
+var charHint = " ";
 var charNameArray = [];
 var charNameHidden = [];
 var charObjArray = [];
@@ -21,7 +24,24 @@ function gameChar(name, picSrc, soundSrc, hint) {
     this.chPic = picSrc;
     this.chSound = soundSrc;
     this.chHint = hint;
-}
+
+	function getchName() {
+       return this.chName;
+    };
+
+  	function getchPic() {
+       return this.chPic;
+    };
+
+  	function getchSound() {
+       return this.chSound;
+    };
+    
+  	function getchHint() {
+       return this.chHint;
+    };
+    
+};
 
 function createCharObjArray () {
 	var char_1 = new gameChar("CARTMAN", "assets/images/cartman.gif", "assets/sounds/cartman.mp3", "Likes Cheesy Poofs");
@@ -55,7 +75,8 @@ function createGuessArray(ltrGuessed) { //feed guesses into this array, do not t
 		guessArray.push(ltrGuessed);
 	} 
 	else {
-		console.log("You have already guessed the letter " + ltrGuessed); // replace this with alert content in a div
+		// console.log("You have already guessed the letter " + ltrGuessed); // replace this with alert content in a div
+		document.getElementById("msgAlerts").innerHTML = ("You have already guessed the letter " + ltrGuessed);
 	}
 	displayGuessArray();
 };
@@ -88,7 +109,8 @@ function scoreCalc(correctGuess) { //update score tallies, and start new round i
 		matchCount++;
 		if (matchCount === charNameArray.length || charNameHidden.indexOf("_") === -1) {
 			winCount++;
-			console.log("You won!"); // replace this with alert content in a div
+			// console.log("You won!"); // replace this with alert content in a div
+			document.getElementById("msgAlerts").innerHTML = "You won!";
 			newRound(); 
 		}
 
@@ -98,7 +120,8 @@ function scoreCalc(correctGuess) { //update score tallies, and start new round i
 		guessCount--;  
 		if (guessCount === 0) {
 			lossCount++;
-			console.log("You lost!"); // replace this with alert content in a div
+			// console.log("You lost!"); // replace this with alert content in a div
+			document.getElementById("msgAlerts").innerHTML = "You lost!";
 			newRound(); 
 
 		}
@@ -133,6 +156,9 @@ function resetGame() { //reset all global variables
 function initVars() { //re-initialize variables
 
 	charName = " ";
+	charPicSrc = " ";
+	charSoundSrc = " ";
+	charHint = " ";
 	charNameArray = [];
 	charNameHidden = [];
 	guessArray = [];
@@ -156,6 +182,9 @@ function newRound() { //select new char, re-set display values (except for win/l
 
     updateCounters();
 
+    // if (winCount > 0 || lossCount > 0) {
+	// document.getElementById("msgAlerts").innerHTML = "A new round is starting...";
+	// }
 };
 
 function newChar() { //randomly select a new charName from an array , or new charObject from an array
@@ -165,6 +194,11 @@ function newChar() { //randomly select a new charName from an array , or new cha
 	var charObj = charObjArray[charIndex];
 	console.log(charObj);
 	charName = charObj.chName;
+/*	charName = charObj.getchName();
+	charPicSrc = charObj.getchPic();
+	charSoundSrc = charObj.getchSound();
+	charHint = charObj.getchHint();*/
+	charHint = charObj.chHint;
 	console.log(charName);
 
 	// charName = "CARTMAN";
@@ -187,17 +221,26 @@ document.getElementById("btnReset").addEventListener("click", function() {
 
 });
 
+document.getElementById("btnHint").addEventListener("click", function() {
+	document.getElementById("msgAlerts").innerHTML = charHint;
+
+});
+
+
+
 document.onkeyup = function(event) {
 
 	var guess = event.key;
 	ltrGuessed = guess.toUpperCase();
+	
+	document.getElementById("msgAlerts").innerHTML = " ";
 
    	matchSearch(ltrGuessed);
 
 	createGuessArray(ltrGuessed);
-
+	
     };
 
-};
+ }; 
 
 // end hiding script from old browsers -->
