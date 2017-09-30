@@ -44,16 +44,20 @@ function gameChar(name, picSrc, soundSrc, hint) {
 };
 
 function createCharObjArray () {
-	var char_1 = new gameChar("CARTMAN", "assets/images/Eric-cartman.png", "assets/sounds/cartman.mp3", "Likes Cheesy Poofs");
-	var char_2 = new gameChar("BUTTERS", "assets/images/ButtersStotch.png", "assets/sounds/butters.mp3", "Always Grounded"); 
-	var char_3 = new gameChar("KENNY", "assets/images/KennyMcCormick.png", "assets/sounds/kenny.mp3", "Accident Prone"); 
-	charObjArray.push(char_1, char_2, char_3);
-	console.log(charObjArray[1]);
+	var char_1 = new gameChar("CARTMAN", "assets/images/Eric-cartman.png", "assets/sounds/respect_x.wav", "Likes Cheesy Poofs");
+	var char_2 = new gameChar("BUTTERS", "assets/images/ButtersStotch.png", "assets/sounds/Butters.mp4", "Always Grounded"); 
+	var char_3 = new gameChar("KENNY", "assets/images/KennyMcCormick.png", "assets/sounds/Kenny.mp4", "Accident Prone"); 
+	var char_4 = new gameChar("KYLE", "assets/images/Kyle-broflovski.png", "assets/sounds/holy_crap.wav", "Brother is Canadian"); 
+	var char_5 = new gameChar("MRHANKEY", "assets/images/Mr._Hankey_transparent.png", "assets/sounds/Hankey.mp4", "Spirit of Christmas"); 
+	var char_6 = new gameChar("TWEEK", "assets/images/Tweek_pic.png", "assets/sounds/Tweak.mp4", "Fond of Coffee"); 
+	var char_7 = new gameChar("STAN", "assets/images/Stan-marsh-0.png", "assets/sounds/Stan.mp4", "Dating Wendy"); 
+	charObjArray.push(char_1, char_2, char_3, char_4, char_5, char_6, char_7);
+
 };
 
 function charNameToArray(charName) { //take the character name and convert to an array
 	charNameArray = Array.from(charName);
-	console.log("character name array: " + charNameArray);
+	// console.log("character name array: " + charNameArray);
 };
 
 function createHiddenNameArray(charNameArray) { //take the character name array and create a new array of underscores the same length
@@ -110,9 +114,10 @@ function scoreCalc(correctGuess) { //update score tallies, and start new round i
 		if (matchCount === charNameArray.length || charNameHidden.indexOf("_") === -1) {
 			winCount++;
 			// console.log("You won!"); // replace this with alert content in a div
-			document.getElementById("msgAlerts").innerHTML = "You won!";
+			document.getElementById("msgAlerts").innerHTML = "You won! Click the button to advance to the next round.";
 			revealPhoto(charPicSrc);
-			// newRound(); 
+			playSound(charSoundSrc);
+			// newRound(); // change so user has to click to get new round, otherwise photo reveal gets hidden again by reset
 		}
 
 	}
@@ -122,8 +127,8 @@ function scoreCalc(correctGuess) { //update score tallies, and start new round i
 		if (guessCount === 0) {
 			lossCount++;
 			// console.log("You lost!"); // replace this with alert content in a div
-			document.getElementById("msgAlerts").innerHTML = "You lost!";
-			newRound(); 
+			document.getElementById("msgAlerts").innerHTML = "You lost!  Click the button to try again in the next round.";
+		//	newRound(); // change so user has to click to get new round
 
 		}
 	}
@@ -182,6 +187,18 @@ function revealPhoto(picSrc) {
 	document.getElementById("imgSPC").src = picSrc;
 };
 
+function playSound(sndSrc) {
+	var audio = new Audio(sndSrc);
+	audio.play();
+};
+
+function clearAlerts() {
+
+    document.getElementById("msgHint").innerHTML = " ";
+    document.getElementById("msgAlerts").innerHTML = " ";
+
+};
+
 
 function newRound() { //select new char, re-set display values (except for win/loss)
 
@@ -192,32 +209,24 @@ function newRound() { //select new char, re-set display values (except for win/l
    	createHiddenNameArray(charNameArray);
 	displayHiddenNameArray();
     displayGuessArray();
-
+    clearAlerts();
     updateCounters();
 
-    // if (winCount > 0 || lossCount > 0) {
-	// document.getElementById("msgAlerts").innerHTML = "A new round is starting...";
-	// }
 };
 
 function newChar() { //randomly select a new charName from an array , or new charObject from an array
 
 	var charIndex = (Math.floor(Math.random() * charObjArray.length));
-	console.log(charIndex);
 	var charObj = charObjArray[charIndex];
-	console.log(charObj);
 	charName = charObj.chName;
+	charSoundSrc = charObj.chSound;
+	charPicSrc = charObj.chPic;
+	charHint = charObj.chHint;
 /*	charName = charObj.getchName();
 	charPicSrc = charObj.getchPic();
 	charSoundSrc = charObj.getchSound();
 	charHint = charObj.getchHint();*/
-	charPicSrc = charObj.chPic;
-	charHint = charObj.chHint;
-	console.log(charName);
 
-	// charName = "CARTMAN";
-
-	return charName; //or charobject
 };
 
 
@@ -235,8 +244,13 @@ document.getElementById("btnReset").addEventListener("click", function() {
 
 });
 
+document.getElementById("btnRound").addEventListener("click", function() {
+	newRound();
+
+});
+
 document.getElementById("btnHint").addEventListener("click", function() {
-	document.getElementById("msgAlerts").innerHTML = charHint;
+	document.getElementById("msgHint").innerHTML = charHint;
 
 });
 

@@ -4,6 +4,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<link href="https://fonts.googleapis.com/css?family=Eczar|Rye" rel="stylesheet"> 
 
     <script type="text/javascript" src="assets/javascript/game.js"></script>
 	
@@ -12,25 +13,25 @@
 	<title>Hangman Game</title>
 </head>
 <body>
-	<div class="jumbotron">
+	<header class="jumbotron">
 		
-		<h1 class="text-center">Hangman: Southpark Edition</h1>
-		<h3 class="text-center">Guess the names of Southpark characters.  Press any key to get started!</h3>
+		<h1 class="text-center">Hangman: South Park Edition</h1>
+		<h3 class="text-center">Guess the names of South Park characters.  Press any key to get started!</h3>
 
-	</div>
+	</header>
 
 	<div class="container-fluid">
 
 		<div class="row">
 
-			<div class="col-md-3">
+			<div class="col-md-2 col-sm-1">
 				
 
 			</div>
 			
-			<div class="col-md-3">
+			<div class="col-md-4 col-sm-5">
 				
-				<div class="container">
+				<div class="container-fluid">
 
 					<div class="row">
 
@@ -84,17 +85,13 @@
 
 					<div class="row">
 
-						<div class="col-md-12">
+						<div class="col-md-6">
 
 							<h4>Wins: <span class="badge" id="winCnt"> </span></h4>
 
 						</div>
-					
-					</div>
 
-					<div class="row">
-
-						<div class="col-md-12">
+						<div class="col-md-6">
 
 							<h4>Losses: <span class="badge" id="lossCnt"> </span></h4>
 
@@ -103,24 +100,53 @@
 					</div>
 
 					<div class="row">
-
-						<div class="col-md-12">
-							<br>
-							<button type="button" class="btn btn-primary" id="btnReset">Reset Game</button>
+						
+						<div class="col-md-4 col-sm-4">
+							
 							<br>
 							<button type="button" class="btn btn-success" id="btnHint">Hint</button>
+						
+						</div>
+						
+						<div class="col-md-8 col-sm-8">
+							
+							<br>
+							<h4  id="msgHint"></h4>
+
+						</div>
+											
+					</div>
+					
+					<div class="row">
+
+						<div class="col-md-6 col-sm-6">
+						
+							<br>
+							<button type="button" class="btn btn-primary" id="btnRound">Next Round</button>
+
+						</div>
+
+						<div class="col-md-6 col-sm-6">
+						
+							<br>
+							<button type="button" class="btn btn-danger" id="btnReset">Reset Game</button>
+
 						</div>
 					
 					</div>
 
-					
 				</div>
 				
 			</div>
 
-			<div class="col-md-6">
+			<div class="col-md-1 col-sm-1">
 				
-				<img class="col-md-6" id="imgSPC">
+			
+			</div>
+
+			<div class="col-md-5 col-sm-5" id="picDiv">
+				
+				<img class="col-md-5 col-sm-5" id="imgSPC">
 				
 			</div>
  
@@ -130,8 +156,9 @@
 
 			<div class="col-md-12">
 				
+
 				<br>
-				<h3 class="text-center" id="msgAlerts"></h3>
+				<h2 class="text-center" id="msgAlerts"></h2>
 
 			</div>
 
@@ -141,6 +168,8 @@
 
 
 	</div>
+
+	<footer id="bottom-banner">&nbsp;</footer>
 
 
 </body>
