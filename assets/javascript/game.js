@@ -17,6 +17,7 @@ var matchCount = 0;
 var winCount = 0;
 var lossCount = 0;
 var correctGuess = false;
+var gameOver = false;
 
 
 function gameChar(name, picSrc, soundSrc, hint) {
@@ -25,19 +26,19 @@ function gameChar(name, picSrc, soundSrc, hint) {
     this.chSound = soundSrc;
     this.chHint = hint;
 
-	function getchName() {
+	this.getchName = function() {
        return this.chName;
     };
 
-  	function getchPic() {
+  	this.getchPic = function () {
        return this.chPic;
     };
 
-  	function getchSound() {
+  	this.getchSound = function() {
        return this.chSound;
     };
     
-  	function getchHint() {
+  	this.getchHint = function() {
        return this.chHint;
     };
     
@@ -57,7 +58,6 @@ function createCharObjArray () {
 
 function charNameToArray(charName) { //take the character name and convert to an array
 	charNameArray = Array.from(charName);
-	// console.log("character name array: " + charNameArray);
 };
 
 function createHiddenNameArray(charNameArray) { //take the character name array and create a new array of underscores the same length
@@ -75,12 +75,13 @@ function displayHiddenNameArray() { //display the array with placeholders and sp
 
 function createGuessArray(ltrGuessed) { //feed guesses into this array, do not take in duplicate guesses
 
-	if (guessArray.indexOf(ltrGuessed) === -1) {
-		guessArray.push(ltrGuessed);
-	} 
-	else {
-		// console.log("You have already guessed the letter " + ltrGuessed); // replace this with alert content in a div
-		document.getElementById("msgAlerts").innerHTML = ("You have already guessed the letter " + ltrGuessed);
+	if (!gameOver) {
+		if (guessArray.indexOf(ltrGuessed) === -1) {
+			guessArray.push(ltrGuessed);
+		} 
+		else {
+			document.getElementById("msgAlerts").innerHTML = ("You have already guessed the letter " + ltrGuessed);
+		}
 	}
 	displayGuessArray();
 };
@@ -93,7 +94,8 @@ function displayGuessArray() { //display guesses in caps and with spacing
 
 function matchSearch(ltrGuessed) { //cycle through charNameArray and find index of matching letters.  Cycle through entire array for dups
 
-	correctGuess = false;
+	if (!gameOver) {
+		correctGuess = false;
 	
 		for (var i = 0; i < charNameArray.length; i++) {
 			if (ltrGuessed === charNameArray[i]) {
@@ -105,40 +107,46 @@ function matchSearch(ltrGuessed) { //cycle through charNameArray and find index 
 		}
 
 		scoreCalc(correctGuess);
+	}
 };	
 	
 function scoreCalc(correctGuess) { //update score tallies, and start new round if won/lost
 
-	if (correctGuess && guessArray.indexOf(ltrGuessed) === -1) {
-		matchCount++;
-		if (matchCount === charNameArray.length || charNameHidden.indexOf("_") === -1) {
-			winCount++;
-			// console.log("You won!"); // replace this with alert content in a div
-			document.getElementById("msgAlerts").innerHTML = "You won! Click the button to advance to the next round.";
-			revealPhoto(charPicSrc);
-			playSound(charSoundSrc);
-			// newRound(); // change so user has to click to get new round, otherwise photo reveal gets hidden again by reset
-		}
-
-	}
-
-	else if (!correctGuess && guessArray.indexOf(ltrGuessed) === -1) {
-		guessCount--;  
-		if (guessCount === 0) {
-			lossCount++;
-			// console.log("You lost!"); // replace this with alert content in a div
-			document.getElementById("msgAlerts").innerHTML = "You lost!  Click the button to try again in the next round.";
-		//	newRound(); // change so user has to click to get new round
+	if (!gameOver) {
+		if (correctGuess && guessArray.indexOf(ltrGuessed) === -1) {
+			matchCount++;
+			if (matchCount === charNameArray.length || charNameHidden.indexOf("_") === -1) {
+				winCount++;
+				document.getElementById("msgAlerts").innerHTML = "You won! Click the button to advance to the next round.";
+				revealPhoto(charPicSrc);
+				playSound(charSoundSrc);
+				gameOver = true;
+				// newRound(); // change so user has to click to get new round, otherwise photo reveal gets hidden again by reset
+			}
 
 		}
+
+		else if (!correctGuess && guessArray.indexOf(ltrGuessed) === -1 && guessCount > 0) {
+			guessCount--;  
+			if (guessCount === 0) {
+				lossCount++;
+				document.getElementById("msgAlerts").innerHTML = "You lost!  Click the button to try again in the next round.";
+				gameOver = true;
+			//	newRound(); // change so user has to click to get new round
+
+			}
+		}
+		updateCounters();
 	}
-	updateCounters();
 };
 
 function updateHiddenNameArray(index) { //update charNameHidden to reveal that letter by index, and update matchCount
 
-	if (charNameHidden[index] === "_") {
-		charNameHidden[index] = ltrGuessed;
+	if (!gameOver) {
+
+		if (charNameHidden[index] === "_") {
+			charNameHidden[index] = ltrGuessed;
+		}
 	}
 };
 
@@ -174,6 +182,7 @@ function initVars() { //re-initialize variables
 	matchCount = 0;
 	guessCount = 5;
 	correctGuess = false;
+	gameOver = false;
 
 };
 
@@ -218,14 +227,10 @@ function newChar() { //randomly select a new charName from an array , or new cha
 
 	var charIndex = (Math.floor(Math.random() * charObjArray.length));
 	var charObj = charObjArray[charIndex];
-	charName = charObj.chName;
-	charSoundSrc = charObj.chSound;
-	charPicSrc = charObj.chPic;
-	charHint = charObj.chHint;
-/*	charName = charObj.getchName();
+	charName = charObj.getchName();
 	charPicSrc = charObj.getchPic();
 	charSoundSrc = charObj.getchSound();
-	charHint = charObj.getchHint();*/
+	charHint = charObj.getchHint();
 
 };
 
@@ -261,13 +266,14 @@ document.onkeyup = function(event) {
 	var guess = event.key;
 	ltrGuessed = guess.toUpperCase();
 	
-	document.getElementById("msgAlerts").innerHTML = " ";
+	if (!gameOver) {
+		document.getElementById("msgAlerts").innerHTML = " ";
+		
+	   	matchSearch(ltrGuessed);
 
-   	matchSearch(ltrGuessed);
-
-	createGuessArray(ltrGuessed);
-	
-    };
+		createGuessArray(ltrGuessed);
+	}
+ };
 
  }; 
 
